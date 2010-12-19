@@ -1,0 +1,6 @@
+LittleBlackBox requires the OpenSSL, libpcap and sqlite3 libraries. These must be installed in order to build.
+The latest versions of these libraries are included and will be automatically built when you run make:
+
+	$ make
+
+The littleblackbox binary will be installed to ../bin.
