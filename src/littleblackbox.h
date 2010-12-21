@@ -1,4 +1,4 @@
-#define VERSION			"0.1"
+#define VERSION			"0.1.1"
 #define DB_NAME			"lbb.db"
 #define NUM_COLS		6
 #define COL_HEADERS		"FW Vendor                FW Description                                    HW Vendor                HW Model                 HW Revision    HW Description"

@@ -1,11 +1,12 @@
 CC=gcc
-OPTS=-static -Wall
+BUILD=-static
+OPTS=-Wall $(BUILD)
 OPENSSL=openssl
 LIBPCAP=libpcap
 SQLITE=sqlite
 LDFLAGS=-lsqlite3 -lssl -lcrypto -lpcap -ldl -lpthread
 INC=-I./$(OPENSSL)/include -I./$(LIBPCAP)/include -I./$(SQLITE)/include
-LIB=-L$(OPENSSL)/lib -L$(LIBPCAP)/lib -L$(SQLITE)/lib
+LIB=-L./$(OPENSSL)/lib -L./$(LIBPCAP)/lib -L./$(SQLITE)/lib
 TARGET=littleblackbox
 
 $(TARGET): littleblackbox.o

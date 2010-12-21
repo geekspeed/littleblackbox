@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
         	{ "help", 0, NULL, 'h' },
         	{ 0,    0,    0,    0   }      
     	};
-	char *short_options = "f:c:r:a:e:l:s:pihq";
+	char *short_options = "f:p:r:c:i:s:l:kvqh";
 
 	if(argc < MIN_ARGS)
 	{
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 	/* Make sure we have a fingerprint */
 	if(!certinfo.fingerprint)
 	{
-		/* fprintf(stderr, "ERROR: No suitable certificate fingerprint provided!\n"); */
+		fprintf(stderr, "ERROR: No suitable certificate fingerprint provided!\n");
 		goto end;
 	}
 
