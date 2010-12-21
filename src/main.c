@@ -127,6 +127,9 @@ int main(int argc, char *argv[])
 	retval = EXIT_SUCCESS;
 end:
 	free_key(&certinfo);
+	if(pcap_file) free(pcap_file);
+	if(pcap_interface) free(pcap_interface);
+	if(pcap_filter) free(pcap_filter);
 	return retval;
 }
 
