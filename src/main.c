@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 	/* Make sure we have a fingerprint */
 	if(!certinfo.fingerprint)
 	{
-		fprintf(stderr, "ERROR: No suitable certificate fingerprint provided!\n");
+		fprintf(stderr, "No suitable certificate fingerprint provided!\n");
 		goto end;
 	}
 
