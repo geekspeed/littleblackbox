@@ -1,0 +1,52 @@
+AC_INIT(LittleBlackBox, 0.1.2)
+
+AC_ARG_ENABLE(static, [  --enable-static         enable static compilation ], STATIC=y, STATIC=n)
+
+OPENSSL=openssl
+LIBPCAP=libpcap
+SQLITE=sqlite
+
+AC_PROG_CC
+AC_LANG(C)
+
+CFLAGS="-Wall $CFLAGS"
+
+dnl If not performing a static build, the host system must have these headers and libs installed
+if test $STATIC = n
+then
+	AC_CHECK_HEADER(sqlite3.h,     [], [echo "error: sqlite3.h not found!"; exit -1])
+	AC_CHECK_HEADER(openssl/ssl.h, [], [echo "error: openssl/ssl.h not found!"; exit -1])
+	AC_CHECK_HEADER(pcap.h,        [], [echo "error: pcap.h not found!"; exit -1])
+
+	AC_CHECK_LIB(sqlite3, sqlite3_open, [], [echo "error: libsqlite3 library not found!"; exit -1])
+	AC_CHECK_LIB(pcap, pcap_open_live,  [], [echo "error: libpcap not found!"; exit -1])
+	AC_CHECK_LIB(ssl, SSL_library_init, [], [echo "error: libssl not found!"; exit -1])
+
+	AC_SUBST(INC, "")
+        AC_SUBST(LIB, "")
+        AC_SUBST(BUILD_LIBS, n)
+dnl Else if we are performing a static build, all the libraries will be build in a local directory
+else
+	CFLAGS="-static $CFLAGS"
+	AC_SUBST(INC, "-I./$OPENSSL/include -I./$LIBPCAP/include -I./$SQLITE/include")
+	AC_SUBST(LIB, "-L./$OPENSSL/lib -L./$LIBPCAP/lib -L./$SQLITE/lib")
+	AC_SUBST(BUILD_LIBS, y)
+fi
+
+dnl BSD doesn't like the -ldl linker option
+if uname -s | grep -qi "BSD"
+then
+	LDL=
+else
+	LDL=-ldl
+fi
+
+AC_SUBST(LDL, $LDL)
+AC_SUBST(STATIC, $STATIC)
+AC_SUBST(SQLITE, $SQLITE)
+AC_SUBST(LIBPCAP, $LIBPCAP)
+AC_SUBST(OPENSSL, $OPENSSL)
+
+cp confdefs.h config.h
+
+AC_OUTPUT(Makefile)

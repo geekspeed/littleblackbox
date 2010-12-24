@@ -1,0 +1,48 @@
+CC=@CC@
+CFLAGS=@CFLAGS@
+BUILD_LIBS=@BUILD_LIBS@
+LDFLAGS=-lsqlite3 -lssl -lcrypto -lpcap -lpthread @LDL@
+TARGET=littleblackbox
+
+$(TARGET): littleblackbox.o
+	$(CC) $(CFLAGS) main.c -o ../bin/$(TARGET) *.o @INC@ @LIB@ $(LDFLAGS) 
+
+littleblackbox.o: @SQLITE@ common.o sql.o certs.o network.o
+	$(CC) $(CFLAGS) @INC@ -c littleblackbox.c
+
+common.o: @OPENSSL@
+	$(CC) $(CFLAGS) @INC@ -c common.c
+
+network.o: @OPENSSL@ @LIBPCAP@
+	$(CC) $(CFLAGS) @INC@ -c network.c
+
+certs.o: @OPENSSL@
+	$(CC) $(CFLAGS) @INC@ -c certs.c
+
+sql.o: @SQLITE@
+	$(CC) $(CFLAGS) @INC@ -c sql.c
+
+@OPENSSL@:
+ifeq ($(BUILD_LIBS), y)
+	(mkdir @OPENSSL@ && tar -zxvf openssl*.tar.gz -C @OPENSSL@) 
+	(cd @OPENSSL@/openssl* && ./config --prefix=$(shell pwd)/@OPENSSL@ && make && make install)
+endif
+
+@LIBPCAP@:
+ifeq ($(BUILD_LIBS), y)
+	(mkdir @LIBPCAP@ && tar -zxvf libpcap*.tar.gz -C @LIBPCAP@)
+	(cd @LIBPCAP@/libpcap* && ./configure --prefix=$(shell pwd)/@LIBPCAP@ && make && make install)
+endif
+
+@SQLITE@:
+ifeq ($(BUILD_LIBS), y)
+	(mkdir @SQLITE@ && tar -zxvf sqlite*.tar.gz -C @SQLITE@)
+	(cd @SQLITE@/sqlite* && ./configure --prefix=$(shell pwd)/@SQLITE@ && make && make install)
+endif
+
+clean:
+	rm -f *.o
+
+distclean: clean
+	rm -rf @OPENSSL@ @LIBPCAP@ @SQLITE@
+	rm -rf *.cache config.* Makefile
