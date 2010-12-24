@@ -8,3 +8,5 @@ built into a local directory (not installed on the build system) and statically 
 
 	$ ./configure --enable-static
 	$ make
+
+Note that static builds will not work on Mac OSX.

@@ -25,7 +25,7 @@ then
 	AC_SUBST(INC, "")
         AC_SUBST(LIB, "")
         AC_SUBST(BUILD_LIBS, n)
-dnl Else if we are performing a static build, all the libraries will be build in a local directory
+dnl Else if we are performing a static build, all the libraries will be built in a local directory
 else
 	CFLAGS="-static $CFLAGS"
 	AC_SUBST(INC, "-I./$OPENSSL/include -I./$LIBPCAP/include -I./$SQLITE/include")
