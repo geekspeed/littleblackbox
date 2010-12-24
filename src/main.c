@@ -5,6 +5,7 @@
 #include "littleblackbox.h"
 #include "network.h"
 #include "certs.h"
+#include "dbupdate.h"
 #include "config.h"
 
 #define MIN_ARGS 2
@@ -13,7 +14,7 @@ void usage(char *prog);
 int main(int argc, char *argv[])
 {
 	int retval = EXIT_FAILURE;
-	int long_opt_index = 0, display_info = 0, display_public_cert = 0, quiet = 0;
+	int long_opt_index = 0, display_info = 0, display_public_cert = 0, update_db = 0, quiet = 0;
 	char c = 0;
 	char *pcap_filter = NULL, *pcap_file = NULL, *pcap_interface = NULL;
 	struct keymaster certinfo = { 0 };
@@ -28,10 +29,11 @@ int main(int argc, char *argv[])
         	{ "keypair", 0, NULL, 'k' },
         	{ "info", 0, NULL, 'v' },
         	{ "quiet", 0, NULL, 'q' },
+		{ "update", 0, NULL, 'u' },
         	{ "help", 0, NULL, 'h' },
         	{ 0,    0,    0,    0   }      
     	};
-	char *short_options = "f:p:r:c:i:s:l:kvqh";
+	char *short_options = "f:p:r:c:i:s:l:kvquh";
 
 	if(argc < MIN_ARGS)
 	{
@@ -64,6 +66,9 @@ int main(int argc, char *argv[])
 			case 's':
 				if(optarg) print_search_results(optarg);
 				break;
+			case 'u':
+				update_db = 1;
+				break;
 			case 'k':
                                 display_public_cert = 1;
                                 break;
@@ -79,6 +84,20 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	/* Update the certificate database */
+	if(update_db)
+	{
+		fprintf(stderr, "Updating %s from %s...", DB_NAME, DB_UPDATE_URL);
+		if(!update_database(DB_UPDATE_URL, DB_NAME))
+		{
+			fprintf(stderr, "update failed!\n");
+			goto end;
+		} else {
+			fprintf(stderr, "done.\n");
+			goto success;
+		}
+	}
+			
 	/* If no filter was specified, use the default */
 	if(pcap_filter == NULL)
 	{
@@ -125,6 +144,7 @@ int main(int argc, char *argv[])
 		print_all_cert_info(&certinfo);
 	}
 
+success:
 	retval = EXIT_SUCCESS;
 end:
 	free_key(&certinfo);
@@ -149,6 +169,7 @@ void usage(char *prog)
 	fprintf(stderr, "\t-s, --search=<table.column%squery>    Search the database for a given search term\n", QUERY_DELIMITER);
         fprintf(stderr, "\t-k, --keypair                        Display both the private key and the public key\n");
         fprintf(stderr, "\t-v, --info                           Display all database info related to the public/private keypair\n");
+	fprintf(stderr, "\t-u, --update                         Download the latest certificate database\n");
 	fprintf(stderr, "\t-q, --quiet                          Do not display the private key\n");
         fprintf(stderr, "\t-h, --help                           Show help\n");
         fprintf(stderr, "\n");
