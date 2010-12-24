@@ -5,6 +5,7 @@
 #include "littleblackbox.h"
 #include "network.h"
 #include "certs.h"
+#include "config.h"
 
 #define MIN_ARGS 2
 void usage(char *prog);
@@ -136,7 +137,7 @@ end:
 void usage(char *prog)
 {
         fprintf(stderr, "\n");
-	fprintf(stderr, "LittleBlackBox v%s\n\n", VERSION);
+	fprintf(stderr, "%s\n\n", PACKAGE_STRING);
         fprintf(stderr, "Usage: %s [OPTIONS]\n", prog);
         fprintf(stderr, "\n"); 
         fprintf(stderr, "\t-r, --host=<host:port>               Obtain the public key of a remote host\n");
