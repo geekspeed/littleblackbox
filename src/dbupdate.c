@@ -32,6 +32,8 @@ int update_database(char *url, char *outfile)
         		curl_easy_cleanup(curl);
         		fclose(fp);
 			retval = 1;
+		} else {
+			perror(outfile);
 		}
     	}
 

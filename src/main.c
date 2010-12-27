@@ -16,24 +16,24 @@ int main(int argc, char *argv[])
 	int retval = EXIT_FAILURE;
 	int long_opt_index = 0, display_info = 0, display_public_cert = 0, update_db = 0, quiet = 0;
 	char c = 0;
-	char *pcap_filter = NULL, *pcap_file = NULL, *pcap_interface = NULL;
+	char *pcap_filter = NULL, *pcap_file = NULL, *pcap_interface = NULL, *update_db_outfile = NULL;
 	struct keymaster certinfo = { 0 };
 	struct option long_options[] = {       
-        	{ "fingerprint", 1, NULL, 'f' },     
-        	{ "pem", 1, NULL, 'p'  },    
-        	{ "host", 1, NULL, 'r' }, 
-		{ "pcap", 1, NULL, 'c' },
-		{ "interface", 1, NULL, 'i' },
-		{ "search", 1, NULL, 's' },
-		{ "filter", 1, NULL, 'l' },
-        	{ "keypair", 0, NULL, 'k' },
-        	{ "info", 0, NULL, 'v' },
-        	{ "quiet", 0, NULL, 'q' },
-		{ "update", 0, NULL, 'u' },
-        	{ "help", 0, NULL, 'h' },
+        	{ "fingerprint", required_argument, NULL, 'f' },     
+        	{ "pem", required_argument, NULL, 'p'  },    
+        	{ "host", required_argument, NULL, 'r' }, 
+		{ "pcap", required_argument, NULL, 'c' },
+		{ "interface", required_argument, NULL, 'i' },
+		{ "search", required_argument, NULL, 's' },
+		{ "filter", required_argument, NULL, 'l' },
+        	{ "keypair", no_argument, NULL, 'k' },
+        	{ "info", no_argument, NULL, 'v' },
+        	{ "quiet", no_argument, NULL, 'q' },
+		{ "update", optional_argument, NULL, 'u' },
+        	{ "help", no_argument, NULL, 'h' },
         	{ 0,    0,    0,    0   }      
     	};
-	char *short_options = "f:p:r:c:i:s:l:kvquh";
+	char *short_options = "f:p:r:c:i:s:l:u::kvqh";
 
 	if(argc < MIN_ARGS)
 	{
@@ -68,6 +68,8 @@ int main(int argc, char *argv[])
 				break;
 			case 'u':
 				update_db = 1;
+				if(optarg) update_db_outfile = strdup(optarg);
+				else update_db_outfile = strdup(DB_NAME);
 				break;
 			case 'k':
                                 display_public_cert = 1;
@@ -87,8 +89,8 @@ int main(int argc, char *argv[])
 	/* Update the certificate database */
 	if(update_db)
 	{
-		fprintf(stderr, "Updating %s from %s...", DB_NAME, DB_UPDATE_URL);
-		if(!update_database(DB_UPDATE_URL, DB_NAME))
+		fprintf(stderr, "Updating %s from %s...", update_db_outfile, DB_UPDATE_URL);
+		if(!update_database(DB_UPDATE_URL, update_db_outfile))
 		{
 			fprintf(stderr, "update failed!\n");
 			goto end;
@@ -148,6 +150,7 @@ success:
 	retval = EXIT_SUCCESS;
 end:
 	free_key(&certinfo);
+	if(update_db_outfile) free(update_db_outfile);
 	if(pcap_file) free(pcap_file);
 	if(pcap_interface) free(pcap_interface);
 	if(pcap_filter) free(pcap_filter);
@@ -167,9 +170,9 @@ void usage(char *prog)
         fprintf(stderr, "\t-i, --interface=<iface>              Listen on iface for public key exchanges\n");
         fprintf(stderr, "\t-k, --filter=<filter>                Specify the pcap filter to use [%s]\n", DEFAULT_FILTER);
 	fprintf(stderr, "\t-s, --search=<table.column%squery>    Search the database for a given search term\n", QUERY_DELIMITER);
+	fprintf(stderr, "\t-u, --update=[file]                  Download the latest certificate database to file [%s]\n", DB_NAME);
         fprintf(stderr, "\t-k, --keypair                        Display both the private key and the public key\n");
         fprintf(stderr, "\t-v, --info                           Display all database info related to the public/private keypair\n");
-	fprintf(stderr, "\t-u, --update                         Download the latest certificate database\n");
 	fprintf(stderr, "\t-q, --quiet                          Do not display the private key\n");
         fprintf(stderr, "\t-h, --help                           Show help\n");
         fprintf(stderr, "\n");

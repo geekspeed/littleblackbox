@@ -14,7 +14,7 @@ int lookup_key(struct keymaster *certinfo)
 	int result_size = 0, err_code = 0, retval = 1;
 	char *desc_query = NULL, *priv_query = NULL, *pub_query = NULL;
 
-	if(sql_init(DB_NAME) != SQLITE_OK)
+	if(sql_init(DB_NAME, DB_LOCAL) != SQLITE_OK)
 	{
 		goto error;
 	}
@@ -62,7 +62,7 @@ void print_all_cert_info(struct keymaster *certinfo)
 	/* Format strings for the respective columns retrieved in sql_dump() */
 	char *col_fmt[NUM_COLS] = {"%-25s", "%-50s", "%-25s", "%-25s", "%-15s", "%-50s"};
 
-	if(sql_init(DB_NAME) != SQLITE_OK)
+	if(sql_init(DB_NAME, DB_LOCAL) != SQLITE_OK)
 	{
 		sql_log_error();
 		return;
@@ -88,7 +88,7 @@ void print_search_results(char *term)
         /* Format strings for the respective columns retrieved in sql_dump() */
         char *col_fmt[NUM_COLS] = {"%-25s", "%-50s", "%-25s", "%-25s", "%-15s", "%-50s"};
 
-	if(sql_init(DB_NAME) != SQLITE_OK)
+	if(sql_init(DB_NAME, DB_LOCAL) != SQLITE_OK)
 	{
 		sql_log_error();
 		goto end;

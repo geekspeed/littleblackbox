@@ -3,9 +3,15 @@ CFLAGS=@CFLAGS@
 BUILD_LIBS=@BUILD_LIBS@
 LDFLAGS=-lsqlite3 -lssl -lcrypto -lpcap -lcurl -lpthread -lidn -lrt @LDL@
 TARGET=littleblackbox
+MANPAGE=$(TARGET).1.gz
+DB=lbb.db
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+datarootdir=@datarootdir@
 
 $(TARGET): littleblackbox.o
-	$(CC) $(CFLAGS) main.c -o ../bin/$(TARGET) *.o @INC@ @LIB@ $(LDFLAGS) 
+	$(CC) $(CFLAGS) main.c -o $(TARGET) *.o @INC@ @LIB@ $(LDFLAGS)
+	cp $(TARGET) ../bin/$(TARGET)
 
 littleblackbox.o: @SQLITE@ common.o sql.o certs.o network.o dbupdate.o
 	$(CC) $(CFLAGS) @INC@ -c littleblackbox.c
@@ -49,9 +55,17 @@ ifeq ($(BUILD_LIBS), y)
 	(cd @LIBCURL@/curl* && ./configure --prefix=$(shell pwd)/@LIBCURL@ --disable-debug --disable-curldebug --disable-ares --disable-ftp --disable-ldap --disable-ldaps --disable-rtsp --disable-proxy --disable-dict --disable-telnet --disable-tftp --disable-pop3 --disable-imap --disable-smtp --disable-gopher --disable-manual --disable-sspi --disable-crypto-auth --disable-cookies --disable-hidden-symbols --disable-soname-bump --without-ssl --without-zlib --without-gnutls --without-polarssl --without-nss --without-libssh2 --without-librtmp && make && make install)
 endif
 
+install: docinstall
+	cp ../bin/$(DB) /etc/$(DB)
+	cp ../bin/$(TARGET) @bindir@/$(TARGET)
+	
+docinstall:
+	cp ../docs/$(MANPAGE) @mandir@/man1/$(MANPAGE)
+
 clean:
-	rm -f *.o
+	rm -f $(TARGET) *.o
 
 distclean: clean
 	rm -rf @OPENSSL@ @LIBPCAP@ @SQLITE@ @LIBCURL@
-	rm -rf *.cache config.* Makefile
+	rm -rf *.cache config.*
+	rm -f @mandir@/man1/$(MANPAGE) @bindir@/$(TARGET) /etc/$(DB)

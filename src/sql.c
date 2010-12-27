@@ -10,7 +10,7 @@
 sqlite3 *db  = NULL;
 
 /* Initialize the sqlite database */
-int sql_init(char *db_name)
+int sql_init(char *db_name, char *db_backup)
 {
 	int err_code = 0;
 
@@ -18,7 +18,9 @@ int sql_init(char *db_name)
 	{
 		/* Open database */
         	if(sqlite3_open(db_name, &db)){
-        	        return err_code;
+			if(sqlite3_open(db_backup, &db)){
+	        	        return err_code;
+			}
         	}
 	}
 

@@ -1,4 +1,5 @@
-#define DB_NAME			"lbb.db"
+#define DB_NAME			"/etc/lbb.db"
+#define DB_LOCAL		"lbb.db"
 #define NUM_COLS		6
 #define COL_HEADERS		"FW Vendor                FW Description                                    HW Vendor                HW Model                 HW Revision    HW Description"
 #define HEADER_DELIM		"-----------------------------------------------------------------------------------------------------------------------------------------------------------------------"
