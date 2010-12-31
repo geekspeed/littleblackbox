@@ -14,7 +14,6 @@ CFLAGS="-Wall $CFLAGS"
 
 dnl These libraries are required for both static and shared builds
 AC_CHECK_LIB(pthread, pthread_create, [], [echo "error: pthread library not found!"; exit -1])
-AC_CHECK_LIB(idn, idna_strerror,      [], [echo "error: idn library not found!"; exit -1])
 AC_CHECK_LIB(rt, clock_gettime,       [], [echo "error: rt library not found!"; exit -1])
 
 dnl If not performing a static build, the host system must have these headers and libs installed

@@ -1,7 +1,7 @@
 CC=@CC@
 CFLAGS=@CFLAGS@
 BUILD_LIBS=@BUILD_LIBS@
-LDFLAGS=-lsqlite3 -lssl -lcrypto -lpcap -lcurl -lpthread -lidn -lrt @LDL@
+LDFLAGS=-lsqlite3 -lssl -lcrypto -lpcap -lcurl -lpthread -lrt @LDL@
 TARGET=littleblackbox
 MANPAGE=$(TARGET).1.gz
 DB=lbb.db
@@ -52,7 +52,7 @@ endif
 @LIBCURL@:
 ifeq ($(BUILD_LIBS), y)
 	(mkdir @LIBCURL@ && tar -zxvf curl*.tar.gz -C @LIBCURL@)
-	(cd @LIBCURL@/curl* && ./configure --prefix=$(shell pwd)/@LIBCURL@ --disable-debug --disable-curldebug --disable-ares --disable-ftp --disable-ldap --disable-ldaps --disable-rtsp --disable-proxy --disable-dict --disable-telnet --disable-tftp --disable-pop3 --disable-imap --disable-smtp --disable-gopher --disable-manual --disable-sspi --disable-crypto-auth --disable-cookies --disable-hidden-symbols --disable-soname-bump --without-ssl --without-zlib --without-gnutls --without-polarssl --without-nss --without-libssh2 --without-librtmp && make && make install)
+	(cd @LIBCURL@/curl* && ./configure --prefix=$(shell pwd)/@LIBCURL@ --disable-debug --disable-curldebug --disable-ares --disable-ftp --disable-ldap --disable-ldaps --disable-rtsp --disable-proxy --disable-dict --disable-telnet --disable-tftp --disable-pop3 --disable-imap --disable-smtp --disable-gopher --disable-manual --disable-sspi --disable-crypto-auth --disable-cookies --disable-hidden-symbols --disable-soname-bump --without-ssl --without-zlib --without-gnutls --without-polarssl --without-nss --without-libssh2 --without-librtmp --without-libidn && make && make install)
 endif
 
 install: docinstall
