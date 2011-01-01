@@ -1,4 +1,4 @@
-AC_INIT(LittleBlackBox, 0.1.2)
+AC_INIT(LittleBlackBox, 0.1.3)
 
 AC_ARG_ENABLE(static, [  --enable-static         enable static compilation ], STATIC=y, STATIC=n)
 
