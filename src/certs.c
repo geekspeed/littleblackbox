@@ -28,20 +28,26 @@ char *fingerprint_host(char *target)
 		/* The target string can be in the following formats:
 		 * 	192.168.1.1
 		 *	192.168.1.1:443
+		 * IPv6 is not supported.
 		 * If a port is defined, we need to parse it out. Else, just use 443.
 		 */
-		if((delim_ptr = strstr(host, COLON)))
+		if(strchr(host, ':') != strrchr(host, ':'))
 		{
-			memset(delim_ptr, 0, 1);
-			delim_ptr++;
-			port = atoi(delim_ptr);
-		}
+			fprintf(stderr, "Invalid host '%s'!\n", host);
+		} else {
+			if((delim_ptr = strstr(host, ":")))
+			{
+				memset(delim_ptr, 0, 1);
+				delim_ptr++;
+				port = atoi(delim_ptr);
+			}
 
-		/* Try both SSLv2 and SSLv3 if necessary */
-		fingerprint = remote_fingerprint(host, port, SSLV3);
-		if(!fingerprint)
-		{
-			fingerprint = remote_fingerprint(host, port, SSLV2);
+			/* Try both SSLv2 and SSLv3 if necessary */
+			fingerprint = remote_fingerprint(host, port, SSLV3);
+			if(!fingerprint)
+			{
+				fingerprint = remote_fingerprint(host, port, SSLV2);
+			}
 		}
 	}
 

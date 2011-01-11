@@ -2,7 +2,6 @@
 #include <openssl/ssl.h>
 
 #define DEFAULT_SSL_PORT	443
-#define COLON			":"
 #define SSLV2			2
 #define SSLV3			3
 
