@@ -8,7 +8,7 @@
 char *format_sha1_hash(unsigned char *hash)
 {
 	int i = 0;
-	char sha_str[SHA_DIGEST_LENGTH*3] = { 0 };
+	char sha_str[(SHA_DIGEST_LENGTH*3)+1] = { 0 };
 
 	for(i=0; i<SHA_DIGEST_LENGTH; i++)
 	{
